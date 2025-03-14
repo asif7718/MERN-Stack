@@ -1,0 +1,41 @@
+// Task 1: Declare a variable `age` and assign it a value of 25.
+let age = 25;
+
+// Declare `isAdult` that is true if age is 18 or more, otherwise false.
+let isAdult = age >= 18;
+
+console.log("Task 1 - isAdult:", isAdult); // Output: true
+
+// Task 2: Given x = 10 and y = 5, perform operations and store results.
+let x = 10;
+let y = 5;
+
+let addition = x + y; // Addition
+let multiplication = x * y; // Multiplication
+let modulus = x % y; // Modulus
+
+console.log("Task 2 - Addition:", addition); // Output: 15
+console.log("Task 2 - Multiplication:", multiplication); // Output: 50
+console.log("Task 2 - Modulus:", modulus); // Output: 0
+
+// Task 3: Check if a number `n` is even or odd and store the result.
+let n = 7; // Example number
+let isEven = n % 2 === 0; // true if even, false if odd
+
+console.log("Task 3 - isEven:", isEven); // Output: false (since 7 is odd)
+
+// Task 4: Write a for loop to store numbers from 1 to 5 in an array.
+let numbersArray = [];
+for (let i = 1; i <= 5; i++) {
+  numbersArray.push(i);
+}
+
+console.log("Task 4 - numbersArray:", numbersArray); // Output: [1, 2, 3, 4, 5]
+
+// Task 5: Write a function `square` that takes a number as input and returns its square.
+function square(number) {
+  return number * number;
+}
+
+let result = square(4); // Example usage
+console.log("Task 5 - square of 4:", result); // Output: 16
