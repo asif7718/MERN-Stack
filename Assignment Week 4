@@ -1,0 +1,273 @@
+1.
+import React from "react";
+
+const products = [
+  { id: 1, name: "Product 1", price: 29.99, image: "https://via.placeholder.com/150" },
+  { id: 2, name: "Product 2", price: 39.99, image: "https://via.placeholder.com/150" },
+  { id: 3, name: "Product 3", price: 49.99, image: "https://via.placeholder.com/150" },
+];
+
+const Navbar = () => (
+  <nav className="bg-blue-600 p-4 text-white">
+    <div className="container mx-auto flex justify-between items-center">
+      <h1 className="text-2xl font-bold">MyStore</h1>
+      <ul className="flex space-x-4">
+        <li><a href="/" className="hover:text-blue-300">Home</a></li>
+        <li><a href="/products" className="hover:text-blue-300">Products</a></li>
+      </ul>
+    </div>
+  </nav>
+);
+
+const HeroSection = () => (
+  <div className="bg-blue-100 py-20 text-center">
+    <h1 className="text-4xl font-bold mb-4">Welcome to MyStore</h1>
+    <p className="text-lg">Discover amazing products at great prices.</p>
+  </div>
+);
+
+const ProductSection = () => (
+  <div className="container mx-auto py-10">
+    <h2 className="text-3xl font-bold text-center mb-8">Our Products</h2>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {products.map((product) => (
+        <div key={product.id} className="border p-4 rounded-lg shadow-lg">
+          <img src={product.image} alt={product.name} className="w-full h-48 object-cover mb-4" />
+          <h3 className="text-xl font-semibold">{product.name}</h3>
+          <p className="text-gray-700">${product.price}</p>
+          <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            View Details
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const Footer = () => (
+  <footer className="bg-blue-600 text-white py-6 mt-10">
+    <div className="container mx-auto text-center">
+      <p>Follow us on:</p>
+      <div className="flex justify-center space-x-4 mt-2">
+        <a href="https://twitter.com" className="hover:text-blue-300">Twitter</a>
+        <a href="https://facebook.com" className="hover:text-blue-300">Facebook</a>
+        <a href="https://instagram.com" className="hover:text-blue-300">Instagram</a>
+      </div>
+    </div>
+  </footer>
+);
+
+const App = () => (
+  <div>
+    <Navbar />
+    <HeroSection />
+    <ProductSection />
+    <Footer />
+  </div>
+);
+
+export default App;
+
+2.
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+
+const ProductDetails = ({ match }) => {
+  const productId = match.params.id;
+  const product = products.find((p) => p.id === parseInt(productId));
+  return (
+    <div className="container mx-auto py-10">
+      <h2 className="text-3xl font-bold mb-8">{product.name}</h2>
+      <img src={product.image} alt={product.name} className="w-full h-64 object-cover mb-4" />
+      <p className="text-gray-700">${product.price}</p>
+      <p className="mt-4">More details about the product...</p>
+      <Link to="/" className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Back to Home
+      </Link>
+    </div>
+  );
+};
+
+const App = () => (
+  <Router>
+    <div>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={
+          <>
+            <HeroSection />
+            <ProductSection />
+          </>
+        } />
+        <Route path="/products/:id" element={<ProductDetails />} />
+      </Routes>
+      <Footer />
+    </div>
+  </Router>
+);
+
+3.
+const express = require("express");
+const app = express();
+const port = 5000;
+
+app.use(express.json());
+
+app.get("/welcome", (req, res) => {
+  res.json({ message: "Welcome to Express!" });
+});
+
+let users = [];
+
+app.get("/users", (req, res) => {
+  res.json(users);
+});
+
+app.post("/users", (req, res) => {
+  const user = { id: users.length + 1, ...req.body };
+  users.push(user);
+  res.status(201).json(user);
+});
+
+app.put("/users/:id", (req, res) => {
+  const userId = parseInt(req.params.id);
+  const userIndex = users.findIndex((u) => u.id === userId);
+  if (userIndex === -1) return res.status(404).json({ message: "User not found" });
+  users[userIndex] = { ...users[userIndex], ...req.body };
+  res.json(users[userIndex]);
+});
+
+app.delete("/users/:id", (req, res) => {
+  const userId = parseInt(req.params.id);
+  users = users.filter((u) => u.id !== userId);
+  res.status(204).send();
+});
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+
+4.const express = require("express");
+const app = express();
+const port = 5000;
+
+// Middleware to parse JSON requests
+app.use(express.json());
+
+// In-memory array to store users
+let users = [];
+
+// Route 1: GET /welcome
+app.get("/welcome", (req, res) => {
+  res.json({ message: "Welcome to Express!" });
+});
+
+// Route 2: GET /users - Fetch all users
+app.get("/users", (req, res) => {
+  res.json(users);
+});
+
+// Route 3: POST /users - Create a new user
+app.post("/users", (req, res) => {
+  const { name, email } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({ message: "Name and email are required" });
+  }
+  const newUser = { id: users.length + 1, name, email };
+  users.push(newUser);
+  res.status(201).json(newUser);
+});
+
+// Route 4: PUT /users/:id - Update a user by ID
+app.put("/users/:id", (req, res) => {
+  const userId = parseInt(req.params.id);
+  const { name, email } = req.body;
+  const userIndex = users.findIndex((user) => user.id === userId);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  users[userIndex] = { ...users[userIndex], name, email };
+  res.json(users[userIndex]);
+});
+
+// Route 5: DELETE /users/:id - Delete a user by ID
+app.delete("/users/:id", (req, res) => {
+  const userId = parseInt(req.params.id);
+  const userIndex = users.findIndex((user) => user.id === userId);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  users.splice(userIndex, 1);
+  res.status(204).send();
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+
+5.
+const express = require("express");
+const { v4: uuidv4 } = require("uuid"); // For generating unique IDs
+const app = express();
+const port = 5000;
+
+// Middleware
+app.use(express.json());
+
+// In-memory array to store users
+let users = [];
+
+// GET /users - Fetch all users
+app.get("/users", (req, res) => {
+  res.json(users);
+});
+
+// POST /users - Add a new user
+app.post("/users", (req, res) => {
+  const { name, email } = req.body;
+  
+  if (!name || !email) {
+    return res.status(400).json({ message: "Name and email are required" });
+  }
+
+  const newUser = { id: uuidv4(), name, email };
+  users.push(newUser);
+  res.status(201).json(newUser);
+});
+
+// PUT /users/:id - Update a user
+app.put("/users/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, email } = req.body;
+  
+  const userIndex = users.findIndex((user) => user.id === id);
+  
+  if (userIndex === -1) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  users[userIndex] = { ...users[userIndex], name, email };
+  res.json(users[userIndex]);
+});
+
+// DELETE /users/:id - Delete a user
+app.delete("/users/:id", (req, res) => {
+  const { id } = req.params;
+  const userIndex = users.findIndex((user) => user.id === id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  users.splice(userIndex, 1);
+  res.status(204).send();
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
